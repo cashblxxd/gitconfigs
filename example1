@@ -1,0 +1,4 @@
+ssh-add .ssh/example1 > /dev/null 2>&1
+git config --global user.email "example1@mail.host"
+git config --global user.name "example1"
+git config --global user.signingkey "ssh-ed25519 AAAACgh78sgfdygsuyfIxec"
