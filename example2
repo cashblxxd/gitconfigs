@@ -1,4 +1,25 @@
-ssh-add .ssh/example2 > /dev/null 2>&1
-git config --global user.email "example2@mail.host"
-git config --global user.name "example2"
-git config --global user.signingkey "ssh-ed25519 AAAACfrtd67gfgsauydgyhjsad"
+USERNAME="example2"
+EMAIL="example2@mail.host"
+SIGNING_KEY="AAAACfrtd67gfgsauydgyhjsad"
+
+IDENTITY_FILE="$HOME/.ssh/$USERNAME"
+CONFIG_FILE="$HOME/.ssh/config"
+HOST="github.com"
+
+ssh-add .ssh/$USERNAME > /dev/null 2>&1
+git config --global user.email "$EMAIL"
+git config --global user.name "$USERNAME"
+git config --global user.signingkey "ssh-ed25519 $SIGNING_KEY"
+
+TEMP_FILE=$(mktemp)
+awk -v host="$HOST" -v id_file="$IDENTITY_FILE" '
+BEGIN {OFS=FS="\n"; RS=""; ORS="\n\n"}
+$1 == "Host " host {sub(/IdentityFile .*/, "IdentityFile " id_file)}
+!seen[$1]++' $CONFIG_FILE > $TEMP_FILE
+
+if ! grep -q "Host $HOST" $TEMP_FILE; then
+    echo -e "Host $HOST\n\tIdentityFile $IDENTITY_FILE" >> $TEMP_FILE
+fi
+
+mv $TEMP_FILE $CONFIG_FILE
+chmod 600 $CONFIG_FILE
