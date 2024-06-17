@@ -1,6 +1,7 @@
 ## Identity manager for .gitconfig
+This script lets you easily switch identities for git and ssh
 
-### Setup
+### Running
 
 1. Move this project contents (except `README.md`) to a `.gitconfigs` folder in your home directory.
 2. Create identity files named `username` and fill those out.
